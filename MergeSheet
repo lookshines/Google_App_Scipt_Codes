@@ -1,0 +1,33 @@
+function appendSheet() {
+  var destinationsheetID = '1HKBB5W_meIkzNnbxGaGz_YWtUsNBzVVH44p3P3g7-Ys'; //The Spreadsheet to copy to
+  var urlsSourcesheetID = '1vrKIQAyke3YzQHnbuFPHwiqmuLBXdzt-80VI48Oofeg';  //The Spreadsheet where the URLs of the source sheet are.
+  var sourceSpreadSheet = SpreadsheetApp.openById(urlsSourcesheetID);     
+  var sourceSheet = sourceSpreadSheet.getSheetByName('URL_Import');
+  var lastrow = sourceSheet.getLastRow();
+  var destinationSpreadsheet = SpreadsheetApp.openById('1HKBB5W_meIkzNnbxGaGz_YWtUsNBzVVH44p3P3g7-Ys');
+  var destinationSheet = destinationSpreadsheet.getSheetByName('Sec1'); //The destination sheet name
+
+  for (i = 1; i < lastrow; i++){
+    var theRange = sourceSheet.getRange('D' + (i+1)); //The Column letter
+    var theValue = theRange.getValue();
+    var Spreadsheet_To_Copy = SpreadsheetApp.openByUrl(theValue);
+    var Sheetname_To_Copy = Spreadsheet_To_Copy.getSheetByName('Sec1A'); //The source sheet name
+    var Range_To_Format = Sheetname_To_Copy.getRange('I1:I80'); //The sheet name to format to prevent datatype change
+    Range_To_Format.setNumberFormat("@")                        //Change format to plain text
+    var Range_To_Copy = Sheetname_To_Copy.getRange('A1:L80');   //The source range
+    var value_To_Copy = Range_To_Copy.getValues();
+    var destlastrow = destinationSheet.getLastRow();
+
+    if (destlastrow > 0){
+      var destcell = destinationSheet.getRange('A' + (destlastrow +1));
+      destcell.offset(0, 0, value_To_Copy.length, value_To_Copy[0].length).setValues(value_To_Copy);
+
+    } else{
+      destcell = destinationSheet.getRange('A1' );
+      destcell.offset(0, 0, value_To_Copy.length, value_To_Copy[0].length).setValues(value_To_Copy);
+      
+    }
+
+    
+  }
+}
